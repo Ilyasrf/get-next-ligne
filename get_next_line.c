@@ -6,65 +6,96 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 16:46:30 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/16 23:35:54 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/17 06:20:48 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char *ft_read_file(int fd, char *dumpstr)
+{
+    char *buffer;
+    ssize_t bytes_read;
+
+    if (!dumpstr)
+        dumpstr = ft_strdup("");
+    buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+    if (!buffer)
+        return (free(dumpstr), dumpstr = NULL, NULL);
+    bytes_read = 1;
+    while (bytes_read > 0)
+    {
+        bytes_read = read(fd, buffer, BUFFER_SIZE);
+        if (bytes_read == -1)
+            return (free(buffer), buffer = NULL, free(dumpstr), dumpstr = NULL, NULL);
+        buffer[bytes_read] = '\0';
+        dumpstr = ft_strjoin(dumpstr, buffer);
+        if (!dumpstr)
+            return (free(buffer), buffer = NULL, NULL);
+        if (ft_strchr(dumpstr, '\n'))
+            break;
+    }
+    return (free(buffer), buffer = NULL, dumpstr);
+}
+
+char *ft_get_line(char *dumpstr)
+{
+    int i = 0;
+    char *line;
+
+    if (!dumpstr || !dumpstr[0])
+        return (NULL);
+    while (dumpstr[i] && dumpstr[i] != '\n')
+        i++;
+    if (dumpstr[i] == '\n')
+        i++;
+    line = malloc(sizeof(char) * (i + 1));
+    if (!line)
+        return (NULL);
+    i = 0;
+    while (dumpstr[i] && dumpstr[i] != '\n')
+    {
+        line[i] = dumpstr[i];
+        i++;
+    }
+    if (dumpstr[i] == '\n')
+        line[i++] = '\n';
+    line[i] = '\0';
+    return (line);
+}
+
+char *ft_recycle_dumpstr(char *dumpstr)
+{
+    char *new_dumpstr;
+    int i = 0, j = 0;
+
+    while (dumpstr[i] && dumpstr[i] != '\n')
+        i++;
+    if (!dumpstr[i])
+        return (free(dumpstr), dumpstr = NULL, NULL);
+    i++;
+    new_dumpstr = malloc(sizeof(char) * (ft_strlen(dumpstr) - i + 1));
+    if (!new_dumpstr)
+        return (free(dumpstr), dumpstr = NULL, NULL);
+    while (dumpstr[i])
+        new_dumpstr[j++] = dumpstr[i++];
+    new_dumpstr[j] = '\0';
+    return (free(dumpstr), dumpstr = NULL, new_dumpstr);
+}
+
 char *get_next_line(int fd)
 {
-	static char	*remainder;
-	char		*buf;
-	char		*line;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buf)
-		return (NULL);
-	if (!remainder)
-		return (NULL);
-	line = ft_strchr(remainder, '\n');
+    static char *dumpstr;
+    char *line;
+
+    if (fd < 0 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
+        return (free(dumpstr), dumpstr = NULL, NULL);
+    dumpstr = ft_read_file(fd, dumpstr);
+    if (!dumpstr)
+        return (free(dumpstr), dumpstr = NULL, NULL);
+    line = ft_get_line(dumpstr);
+    if (!line)
+        return (free(dumpstr), dumpstr = NULL, NULL);
+    dumpstr = ft_recycle_dumpstr(dumpstr);
+    return (line);
 }
-char *read_and_store(int fd, char *buffer, char *remainder)
-{
-	ssize_t bytes_read;
-	char *temp;
-	buffer = (char *)malloc(sizeof(char) *(BUFFER_SIZE + 1));
-	if (!buffer)
-		return (NULL);
-	if (!remainder)
-	{
-		remainder = (char *)malloc(1);
-		if (!remainder)
-		{
-			free(buffer);
-			return (NULL);
-		}
-		remainder[0] = '\0';
-	}
-	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	while (bytes_read > 0)
-	{
-		buffer[bytes_read] = '\0';
-		temp = ft_strjoin(remainder, buffer);
-		free(remainder);
-		remainder = temp;
-		if (ft_strchr(buffer, '\n'))
-			break;
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		free (buffer);
-		if (bytes_read < 0)
-		{
-			free(remainder);
-			return (NULL);
-		}
-		return (remainder);
-	}
-	
-	
-}
-char *extract_line(char **remainder)
-{
-	
-}
-	
