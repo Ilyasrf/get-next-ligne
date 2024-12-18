@@ -6,101 +6,100 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 06:29:04 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/17 06:40:02 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/17 23:08:48 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-char	*ft_read_file(int fd, char *dumpstr)
+char	*ft_load_buffer(int fd, char *stash)
 {
 	int		bytes_read;
 	char	*buffer;
 
-	if (!dumpstr)
-		dumpstr = ft_strdup("");
+	if (!stash)
+		stash = ft_strdup("");
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
-		return (free(dumpstr), dumpstr = NULL, NULL);
+		return (free(stash), stash = NULL, NULL);
 	bytes_read = 1;
 	while (bytes_read > 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-			return (free(buffer), buffer = NULL, free(dumpstr), dumpstr = NULL,
-				NULL);
+			return (free(buffer), buffer = NULL, free(stash), stash = NULL, NULL);
 		buffer[bytes_read] = '\0';
-		dumpstr = ft_strjoin(dumpstr, buffer);
-		if (!dumpstr)
+		stash = ft_strjoin(stash, buffer);
+		if (!stash)
 			return (free(buffer), buffer = NULL, NULL);
-		if (ft_strchr(dumpstr, '\n'))
+		if (ft_strchr(stash, '\n'))
 			break ;
 	}
-	return (free(buffer), buffer = NULL, dumpstr);
+	return (free(buffer), buffer = NULL, stash);
 }
 
-char	*ft_get_line(char *dumpstr)
+char	*ft_extract_line(char *stash)
 {
 	char	*line;
 	int		i;
 
 	i = 0;
-	if (!dumpstr || !dumpstr[0])
+	if (!stash || !stash[0])
 		return (NULL);
-	while (dumpstr[i] && dumpstr[i] != '\n')
+	while (stash[i] && stash[i] != '\n')
 		i++;
-	if (dumpstr[i] == '\n')
+	if (stash[i] == '\n')
 		i++;
 	line = malloc(sizeof(char) * (i + 1));
 	if (!line)
 		return (NULL);
 	i = 0;
-	while (dumpstr[i] && dumpstr[i] != '\n')
+	while (stash[i] && stash[i] != '\n')
 	{
-		line[i] = dumpstr[i];
+		line[i] = stash[i];
 		i++;
 	}
-	if (dumpstr[i] == '\n')
+	if (stash[i] == '\n')
 		line[i++] = '\n';
 	line[i] = '\0';
 	return (line);
 }
 
-char	*ft_recycle_dumpstr(char *dumpstr)
+char	*ft_clean_stash(char *stash)
 {
-	char	*new_dumpstr;
+	char	*new_stash;
 	int		i;
 	int		j;
 
 	i = 0;
-	while (dumpstr[i] && dumpstr[i] != '\n')
+	while (stash[i] && stash[i] != '\n')
 		i++;
-	if (!dumpstr[i])
-		return (free(dumpstr), dumpstr = NULL, NULL);
+	if (!stash[i])
+		return (free(stash), stash = NULL, NULL);
 	i++;
-	new_dumpstr = malloc(sizeof(char) * (ft_strlen(dumpstr) - i + 1));
-	if (!new_dumpstr)
-		return (free(dumpstr), dumpstr = NULL, NULL);
+	new_stash = malloc(sizeof(char) * (ft_strlen(stash) - i + 1));
+	if (!new_stash)
+		return (free(stash), stash = NULL, NULL);
 	j = 0;
-	while (dumpstr[i])
-		new_dumpstr[j++] = dumpstr[i++];
-	new_dumpstr[j] = '\0';
-	return (free(dumpstr), dumpstr = NULL, new_dumpstr);
+	while (stash[i])
+		new_stash[j++] = stash[i++];
+	new_stash[j] = '\0';
+	return (free(stash), stash = NULL, new_stash);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*dumpstr[OPEN_MAX];
+	static char	*stash[OPEN_MAX];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
-		return (free(dumpstr[fd]), dumpstr[fd] = NULL, NULL);
-	dumpstr[fd] = ft_read_file(fd, dumpstr[fd]);
-	if (!dumpstr[fd])
-		return (free(dumpstr[fd]), dumpstr[fd] = NULL, NULL);
-	line = ft_get_line(dumpstr[fd]);
+		return (free(stash[fd]), stash[fd] = NULL, NULL);
+	stash[fd] = ft_load_buffer(fd, stash[fd]);
+	if (!stash[fd])
+		return (free(stash[fd]), stash[fd] = NULL, NULL);
+	line = ft_extract_line(stash[fd]);
 	if (!line)
-		return (free(dumpstr[fd]), dumpstr[fd] = NULL, NULL);
-	dumpstr[fd] = ft_recycle_dumpstr(dumpstr[fd]);
+		return (free(stash[fd]), stash[fd] = NULL, NULL);
+	stash[fd] = ft_clean_stash(stash[fd]);
 	return (line);
 }

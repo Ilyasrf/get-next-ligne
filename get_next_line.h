@@ -6,7 +6,7 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 04:10:29 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/17 05:50:03 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/18 05:48:53 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h> 
+#include <stdio.h>
 
 // Define the buffer size
 #ifndef BUFFER_SIZE
@@ -27,12 +29,6 @@ size_t  ft_strlen(const char *s);
 char    *ft_strchr(const char *s, char c);
 char    *ft_strjoin(char *s1, char *s2);
 char *ft_strdup(const char *s);
-
-// Helper functions
-int ft_count(char *buffer);
-char *ft_read_file(int fd, char *buffer);
-char *ft_get_line(char *buffer);
-char *ft_update_buffer(char *buffer);
 char *get_next_line(int fd);
 
 #endif // GET_NEXT_LINE_H

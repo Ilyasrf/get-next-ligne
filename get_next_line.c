@@ -6,96 +6,120 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 16:46:30 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/17 06:20:48 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/18 05:52:03 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char *ft_read_file(int fd, char *dumpstr)
+char *ft_fill_buffer(int fd, char *stash)
 {
     char *buffer;
     ssize_t bytes_read;
 
-    if (!dumpstr)
-        dumpstr = ft_strdup("");
+    if (!stash)
+        stash = ft_strdup("");
     buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
     if (!buffer)
-        return (free(dumpstr), dumpstr = NULL, NULL);
+        return (free(stash), stash = NULL, NULL);
     bytes_read = 1;
     while (bytes_read > 0)
     {
         bytes_read = read(fd, buffer, BUFFER_SIZE);
         if (bytes_read == -1)
-            return (free(buffer), buffer = NULL, free(dumpstr), dumpstr = NULL, NULL);
+            return (free(buffer), buffer = NULL, free(stash), stash = NULL, NULL);
         buffer[bytes_read] = '\0';
-        dumpstr = ft_strjoin(dumpstr, buffer);
-        if (!dumpstr)
+        stash = ft_strjoin(stash, buffer);
+        if (!stash)
             return (free(buffer), buffer = NULL, NULL);
-        if (ft_strchr(dumpstr, '\n'))
+        if (ft_strchr(stash, '\n'))
             break;
     }
-    return (free(buffer), buffer = NULL, dumpstr);
+    return (free(buffer), buffer = NULL, stash);
 }
 
-char *ft_get_line(char *dumpstr)
+char *ft_extract_line(char *stash)
 {
     int i = 0;
     char *line;
 
-    if (!dumpstr || !dumpstr[0])
+    if (!stash || !stash[0])
         return (NULL);
-    while (dumpstr[i] && dumpstr[i] != '\n')
+    while (stash[i] && stash[i] != '\n')
         i++;
-    if (dumpstr[i] == '\n')
+    if (stash[i] == '\n')
         i++;
     line = malloc(sizeof(char) * (i + 1));
     if (!line)
         return (NULL);
     i = 0;
-    while (dumpstr[i] && dumpstr[i] != '\n')
+    while (stash[i] && stash[i] != '\n')
     {
-        line[i] = dumpstr[i];
+        line[i] = stash[i];
         i++;
     }
-    if (dumpstr[i] == '\n')
+    if (stash[i] == '\n')
         line[i++] = '\n';
     line[i] = '\0';
     return (line);
 }
 
-char *ft_recycle_dumpstr(char *dumpstr)
+char *ft_trim_stash(char *stash)
 {
-    char *new_dumpstr;
+    char *new_stash;
     int i = 0, j = 0;
 
-    while (dumpstr[i] && dumpstr[i] != '\n')
+    while (stash[i] && stash[i] != '\n')
         i++;
-    if (!dumpstr[i])
-        return (free(dumpstr), dumpstr = NULL, NULL);
+    if (!stash[i])
+        return (free(stash), stash = NULL, NULL);
     i++;
-    new_dumpstr = malloc(sizeof(char) * (ft_strlen(dumpstr) - i + 1));
-    if (!new_dumpstr)
-        return (free(dumpstr), dumpstr = NULL, NULL);
-    while (dumpstr[i])
-        new_dumpstr[j++] = dumpstr[i++];
-    new_dumpstr[j] = '\0';
-    return (free(dumpstr), dumpstr = NULL, new_dumpstr);
+    new_stash = malloc(sizeof(char) * (ft_strlen(stash) - i + 1));
+    if (!new_stash)
+        return (free(stash), stash = NULL, NULL);
+    while (stash[i])
+        new_stash[j++] = stash[i++];
+    new_stash[j] = '\0';
+    return (free(stash), stash = NULL, new_stash);
 }
 
 char *get_next_line(int fd)
 {
-    static char *dumpstr;
+    static char *stash;
     char *line;
 
     if (fd < 0 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
-        return (free(dumpstr), dumpstr = NULL, NULL);
-    dumpstr = ft_read_file(fd, dumpstr);
-    if (!dumpstr)
-        return (free(dumpstr), dumpstr = NULL, NULL);
-    line = ft_get_line(dumpstr);
+        return (free(stash), stash = NULL, NULL);
+    stash = ft_fill_buffer(fd, stash);
+    if (!stash)
+        return (free(stash), stash = NULL, NULL);
+    line = ft_extract_line(stash);
     if (!line)
-        return (free(dumpstr), dumpstr = NULL, NULL);
-    dumpstr = ft_recycle_dumpstr(dumpstr);
+        return (free(stash), stash = NULL, NULL);
+    stash = ft_trim_stash(stash);
     return (line);
+}
+int main(void)
+{
+    int fd = open("test.txt", O_RDONLY);
+    if (fd < 0)
+    {
+        perror("Error opening file");
+        return 1;
+    }
+
+    char *line;
+    while ((line = get_next_line(fd)) != NULL) // Read each line until EOF
+    {
+        printf("%s", line); // Print the line
+        free(line);         // Free the memory allocated for the line
+    }
+
+    if (close(fd) < 0) // Close the file descriptor
+    {
+        perror("Error closing file");
+        return 1;
+    }
+
+    return 0;
 }
