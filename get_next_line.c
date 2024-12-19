@@ -6,7 +6,7 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 16:46:30 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/18 05:52:03 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/19 04:35:32 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,27 +99,27 @@ char *get_next_line(int fd)
     stash = ft_trim_stash(stash);
     return (line);
 }
-int main(void)
-{
-    int fd = open("test.txt", O_RDONLY);
-    if (fd < 0)
-    {
-        perror("Error opening file");
-        return 1;
-    }
+// int main(void)
+// {
+//     int fd = open("test.txt", O_RDONLY);
+//     if (fd < 0)
+//     {
+//         perror("Error opening file");
+//         return 1;
+//     }
 
-    char *line;
-    while ((line = get_next_line(fd)) != NULL) // Read each line until EOF
-    {
-        printf("%s", line); // Print the line
-        free(line);         // Free the memory allocated for the line
-    }
+//     char *line;
+//     while ((line = get_next_line(fd)) != NULL) // Read each line until EOF
+//     {
+//         printf("%s", line); // Print the line
+//         free(line);         // Free the memory allocated for the line
+//     }
 
-    if (close(fd) < 0) // Close the file descriptor
-    {
-        perror("Error closing file");
-        return 1;
-    }
+//     if (close(fd) < 0) // Close the file descriptor
+//     {
+//         perror("Error closing file");
+//         return 1;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
