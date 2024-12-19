@@ -6,7 +6,7 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 06:29:04 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/17 23:08:48 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/18 20:38:23 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,9 @@ char	*get_next_line(int fd)
 	static char	*stash[OPEN_MAX];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
+	if (fd > OPEN_MAX || fd < 0)
+		return (NULL);
+	if (BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
 		return (free(stash[fd]), stash[fd] = NULL, NULL);
 	stash[fd] = ft_load_buffer(fd, stash[fd]);
 	if (!stash[fd])
