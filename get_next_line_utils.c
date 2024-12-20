@@ -6,24 +6,26 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 03:46:18 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/17 05:27:54 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/19 04:51:41 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-
 size_t	ft_strlen(const char *s)
 {
 	size_t	i;
+
 	i = 0;
 	while (s[i])
 		i++;
 	return (i);
 }
+
 char	*ft_strchr(const char *s, char c)
 {
 	int	i;
+
 	i = 0;
 	while (s[i])
 	{
@@ -33,6 +35,7 @@ char	*ft_strchr(const char *s, char c)
 	}
 	return (NULL);
 }
+
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*res;
@@ -61,15 +64,16 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (free(s1), s1 = NULL, res);
 }
 
-char *ft_strdup(const char *s)
+char	*ft_strdup(const char *s)
 {
 	char	*str;
 	size_t	i;
+
 	str = malloc(ft_strlen(s) + 1);
 	if (!str)
 		return (NULL);
 	i = 0;
-		while (s[i])
+	while (s[i])
 	{
 		str[i] = s[i];
 		i++;

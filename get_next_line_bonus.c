@@ -6,7 +6,7 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 06:29:04 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/18 20:38:23 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/19 04:52:50 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ char	*ft_load_buffer(int fd, char *stash)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-			return (free(buffer), buffer = NULL, free(stash), stash = NULL, NULL);
+			return (free(buffer), buffer = NULL, free(stash), stash = NULL,
+				NULL);
 		buffer[bytes_read] = '\0';
 		stash = ft_strjoin(stash, buffer);
 		if (!stash)

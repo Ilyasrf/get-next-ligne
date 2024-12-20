@@ -6,10 +6,9 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 06:25:42 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/17 06:25:57 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/19 04:52:43 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef GET_NEXT_LINE_BONUS_H
 # define GET_NEXT_LINE_BONUS_H
