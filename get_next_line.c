@@ -6,7 +6,7 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 16:46:30 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/21 07:12:21 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/20 04:30:36 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,47 +103,4 @@ char	*get_next_line(int fd)
 		return (free(stash), stash = NULL, NULL);
 	stash = ft_trim_stash(stash);
 	return (line);
-}
-// int main(void)
-// {
-//     int fd = open("test.txt", O_RDONLY);
-
-//     char *line;
-   
-//         printf("%s", line); // Print the line
-//         free(line);         // Free the memory allocated for the line
-    
-
-
-//     return (0);
-// }
-int main(void) {
-    int fd1 = open("file1.txt", O_RDWR);
-    int fd2 = open("file2.txt", O_RDONLY);
-    int fd3 = open("file3.txt", O_RDONLY);
-
-    char *line1, *line2, *line3;
-    while ((line1 = get_next_line(fd1)) || 
-           (line2 = get_next_line(fd2)) || 
-           (line3 = get_next_line(fd3))) {
-        
-        if (line2) {
-            printf("File 2: %s", line2);
-            free(line2);
-        }
-		if (line1) {
-            printf("File 1: %s", line1);
-            free(line1);
-        }
-        if (line3) {
-            printf("File 3: %s", line3);
-            free(line3);
-        }
-    }
-
-	close(fd1);
-    close(fd2);
-    close(fd3);
-
-    return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: irfei <irfei@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 06:29:04 by irfei             #+#    #+#             */
-/*   Updated: 2024/12/21 07:15:28 by irfei            ###   ########.fr       */
+/*   Updated: 2024/12/19 04:52:50 by irfei            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,33 +105,4 @@ char	*get_next_line(int fd)
 		return (free(stash[fd]), stash[fd] = NULL, NULL);
 	stash[fd] = ft_clean_stash(stash[fd]);
 	return (line);
-}
-int main(void) {
-    int fd1 = open("file1.txt", O_RDWR);
-    int fd2 = open("file2.txt", O_RDONLY);
-    int fd3 = open("file3.txt", O_RDONLY);
-
-    char *line1, *line2, *line3;
-    while ((line2 = get_next_line(fd2)) || 
-           (line1 = get_next_line(fd1)) || 
-           (line3 = get_next_line(fd3))) {
-        if (line2) {
-            printf("File 2: %s", line1);
-            free(line2);
-        }
-        if (line1) {
-            printf("File 1: %s", line2);
-            free(line1);
-        }
-        if (line3) {
-            printf("File 3: %s", line3);
-            free(line3);
-        }
-    }
-
-	close(fd1);
-    close(fd2);
-    close(fd3);
-
-    return (0);
 }
